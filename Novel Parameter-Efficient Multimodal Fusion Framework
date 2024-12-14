@@ -1,0 +1,29 @@
+### MoPE: Mixture of Prompt Experts for Parameter-Efficient Multimodal Fusion
+
+**Category**: Multimodal / Prompt Engineering
+
+**Resource Link**: https://arxiv.org/abs/2312.03734
+
+**Original Analysis**:
+MoPE introduces a groundbreaking approach to multimodal fusion by implementing specialized prompt types that adaptively capture both global and instance-level features. The key innovation lies in its ability to achieve state-of-the-art performance while using only 0.7% of trainable parameters compared to full fine-tuning approaches. The framework's architecture-agnostic nature and dynamic prompt routing mechanism represent a significant advance in efficient multimodal AI systems.
+
+**Technical Details**:
+```python
+# Simplified MoPE implementation
+class MixtureOfPromptExperts:
+    def __init__(self, num_experts=8, prompt_dim=768):
+        self.num_experts = num_experts
+        self.prompt_experts = nn.ModuleList([
+            PromptExpert(prompt_dim) for _ in range(num_experts)
+        ])
+        self.router = ExpertRouter(prompt_dim)
+    
+    def forward(self, x):
+        # Dynamic routing based on instance features
+        routing_weights = self.router(x)  # [batch_size, num_experts]
+        
+        # Combine expert prompts
+        prompts = torch.stack([expert(x) for expert in self.prompt_experts])
+        final_prompt = torch.sum(routing_weights.unsqueeze(-1) * prompts, dim=1)
+        
+        return final_prompt
