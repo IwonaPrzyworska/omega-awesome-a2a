@@ -1,0 +1,33 @@
+## Text-Guided 3D Scene Editing
+
+### GaussianEditor: Fast & Precise 3D Scene Editing via Gaussian Splatting
+
+[Paper](https://arxiv.org/abs/2311.XXXXX) | [Project Page](https://GaussianEditor.github.io) | [Code](https://github.com/GaussianEditor/GaussianEditor)
+
+GaussianEditor represents a significant advancement in 3D scene editing by leveraging explicit 3D Gaussian representations for precise, localized modifications. Unlike traditional diffusion-based approaches, it enables targeted editing of specific scene regions while maintaining global consistency.
+
+Key Implementation Details:
+```python
+# Core RoI extraction and Gaussian alignment
+def extract_gaussian_roi(text_prompt, scene_gaussians):
+    # Extract region of interest from text
+    roi_bounds = text_to_spatial_bounds(text_prompt)
+    
+    # Align with 3D Gaussians
+    relevant_gaussians = filter_gaussians_in_bounds(
+        scene_gaussians, 
+        roi_bounds,
+        threshold=0.85  # Confidence threshold
+    )
+    return relevant_gaussians
+
+# Fast editing pipeline
+class GaussianEditor:
+    def edit_scene(self, gaussians, text_prompt):
+        roi = extract_gaussian_roi(text_prompt, gaussians)
+        edited_gaussians = apply_editing_transform(
+            roi,
+            editing_strength=0.7,
+            preserve_structure=True
+        )
+        return merge_with_scene(gaussians, edited_gaussians)
