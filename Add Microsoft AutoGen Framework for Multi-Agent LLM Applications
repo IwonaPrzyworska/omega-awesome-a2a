@@ -1,0 +1,32 @@
+# AutoGen: A Framework for Multi-Agent LLM Applications
+
+**Repository**: [microsoft/autogen](https://github.com/microsoft/autogen)
+**Paper**: [AutoGen: Enabling Next-Generation LLM Applications via Multi-Agent Conversation](https://arxiv.org/pdf/2308.08155.pdf)
+
+## Technical Summary
+AutoGen introduces a robust framework for developing multi-agent LLM applications through conversational interactions. The framework supports:
+- Dynamic agent creation and customization
+- Flexible conversation patterns beyond simple back-and-forth exchanges
+- Built-in code execution environment
+- Seamless integration of human inputs alongside AI agents
+
+## Implementation Example
+```python
+from autogen import AssistantAgent, UserProxyAgent
+
+# Initialize agents
+assistant = AssistantAgent(
+    name="coding_assistant",
+    llm_config={"config_list": config_list}
+)
+
+user_proxy = UserProxyAgent(
+    name="user_proxy",
+    code_execution_config={"work_dir": "coding"}
+)
+
+# Start multi-agent conversation
+user_proxy.initiate_chat(
+    assistant,
+    message="Let's solve this coding problem"
+)
