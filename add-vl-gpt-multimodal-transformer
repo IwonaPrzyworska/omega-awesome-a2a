@@ -1,0 +1,37 @@
+### VL-GPT: Vision-Language Generative Pre-trained Transformer
+
+**Paper Link**: [arXiv:2312.09251](https://arxiv.org/abs/2312.09251)
+
+**Category**: Multimodal Foundation Models
+
+**Key Innovation**: VL-GPT introduces a groundbreaking unified approach for processing both visual and linguistic data through a single transformer architecture. The key technical advancement is its novel image tokenizer-detokenizer framework that converts images into continuous embeddings, enabling true multimodal sequence processing with a unified auto-regressive objective.
+
+**Technical Details**:
+- Architecture: Unified transformer with image tokenizer-detokenizer framework
+- Training Objective: Single auto-regressive next-token prediction for both modalities
+- Capabilities: 
+  - Zero-shot and few-shot performance across multiple tasks
+  - In-context learning with multimodal prompts
+  - Image captioning, VQA, text-to-image generation
+
+**Implementation Example**:
+```python
+from vl_gpt import VLGPT, ImageTokenizer
+
+# Initialize model and tokenizer
+model = VLGPT.from_pretrained('vl-gpt-base')
+image_tokenizer = ImageTokenizer()
+
+# Process multimodal input
+image = load_image('example.jpg')
+text = "Describe this image:"
+
+# Convert image to tokens
+image_tokens = image_tokenizer.encode(image)
+
+# Generate response
+output = model.generate(
+    image_tokens + text_tokens,
+    max_length=100,
+    temperature=0.7
+)
