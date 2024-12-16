@@ -1,0 +1,55 @@
+### ImageBind-LLM: Multi-Modality Instruction Tuning via ImageBind
+
+**Paper Link**: [arXiv:2309.03905](https://arxiv.org/abs/2309.03905)
+
+**Category**: Multimodal Instruction Models
+
+**Key Innovation**: ImageBind-LLM introduces a novel approach to multimodal instruction tuning that enables LLMs to process multiple modalities (images, audio, 3D point clouds, video) through image-text alignment training alone. The architecture uniquely leverages ImageBind's joint embedding space and implements a training-free visual cache model for cross-modal enhancement.
+
+**Technical Details**:
+- Base Architecture: LLaMA + ImageBind encoders
+- Training Method: Image-text alignment with learnable bind network
+- Modalities: Images, audio, 3D point clouds, video
+- Cache System: 3M image features for cross-modal enhancement
+- Evaluation: Tested across 27 vision-language datasets and MME benchmark
+
+**Implementation**:
+```python
+from imagebind_llm import ImageBindLLM, BindNetwork
+from imagebind.models import imagebind_huge
+import torch
+
+# Initialize models
+bind_network = BindNetwork()
+imagebind = imagebind_huge(pretrained=True)
+llm = ImageBindLLM.from_pretrained('llama-7b')
+
+# Process multimodal input
+def process_multimodal(inputs, prompt):
+    # Extract features using ImageBind
+    modality_features = imagebind.forward(inputs)
+    
+    # Transform features through bind network
+    aligned_features = bind_network(modality_features)
+    
+    # Generate response with cached enhancement
+    response = llm.generate(
+        prompt=prompt,
+        modality_features=aligned_features,
+        use_cache=True,
+        max_length=200
+    )
+    return response
+
+# Example usage
+inputs = {
+    'image': load_image('scene.jpg'),
+    'audio': load_audio('sound.wav'),
+    'point_cloud': load_pc('object.ply')
+}
+
+response = process_multimodal(
+    inputs,
+    "Describe the relationship between the visual scene, 
+     sound, and 3D structure."
+)
